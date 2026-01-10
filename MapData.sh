@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=batch
 #SBATCH --mail-type=FAIL
-#SBATCH --mail-user=zlewis@uga.edu
+#SBATCH --mail-user=ad45368@uga.edu
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=100gb
@@ -91,8 +91,20 @@ bamCoverage -p $THREADS --MNase -bs 1 --normalizeUsing BPM --minMappingQuality 2
 
 #call Peaks
 module load MACS3/3.0.1-gfbf-2023a
-
 #using --nolambda paramenter to call peaks without control
-macs3 callpeak -t "${bam}" -f BAMPE -n "${accession}" --broad -g 41037538 --broad-cutoff 0.1 --outdir "${PeakDir}" --min-length 800 --max-gap 500 --nolambda
+#control version: use this to make blacklist
+macs3 callpeak -t "${bam}" -c ${OUTDIR}/SortedBamFiles/153-47_ChIP_WT_dpf6_gfp-trap_Rep1.bam -f BAMPE -n "${name}" -g 41037538 --outdir "${OUTDIR}/Peaks" 
 
+peakfile="${OUTDIR}/${name}_peaks.narrowPeak"
 
+# annotate genes + identify motifs
+# ml Homer/5.1-foss-2023a-R-4.3.2
+
+#before running - run this command to remove additional portions of chromosome name
+# sed 's/\.1 .*$//g' GCA_000182925.2_NC12_genomic.fna > Nc12_Genomic_homer.fna
+
+#findMotifsGenome.pl ${peakfile} /home/ad45368/NcGenome/Nc12_Genomic_homer.fna ${OUTDIR}/Motifs/ -size given -bg 
+
+#create a consensus peakset of both fsd-1 samples
+
+done
