@@ -12,20 +12,61 @@
 
 cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
-outdir="../MappingOutput"
+outdir="./MappingOutput"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
 Motfis="${outdir}/Motifs"
+
 ## Input control and rep information, using name:
 
-Control1="143-144_ChIP_WT_gfp-trap_Rep1"
-Control2="153-44_ChIP_WT_dpf3_gfp-trap_Rep1"
-Control3="153-47_ChIP_WT_dpf6_gfp-trap_Rep1"
-Chip1="143-3_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1"
-Chip2="143-5_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1"
+#Control1="143_144_ChIP_WT_gfp_trap_Rep1"
+Control2="153_44_ChIP_WT_dpf3_gfp_trap_Rep1"
+Control3="153_47_ChIP_WT_dpf6_gfp_trap_Rep1"
+Chip1="143_3_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
+Chip2="143_5_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
 
-KC683708.1
+h2aZ_gt_M1="153_50_ChIP_h2aZ_M_gfp_trap_Rep1"
+h2aZ_gp_M1="153_51_ChIP_h2aZ_M_GFP_Rep1"
+
+h2aZ_gp_d3="153_54_ChIP_h2aZ_dpf3_GFP_Rep1"
+h2aZ_gt_d3="153_53_ChIP_h2aZ_dpf3_gfp_trap_Rep1"
+
+h2aZ_gt_d6="153_56_ChIP_h2aZ_dpf6_gfp_trap_Rep1"
+h2aZ_gp_d6="153_57_ChIP_h2aZ_dpf6_GFP_Rep1"
+
+## Use bedtools to make a consensus peakset of peaks with 80% overlap in all samples
+ml BEDTools/2.31.1-GCC-13.3.0
+
+bedtools intersect -a $PeakDir/${Control2}.broadPeak -b ${PeakDir}/${Control3}.broadPeak  -f 0.5 -wa > ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+bedtools intersect -a ${PeakDir}/${Chip1}.narrowPeak -b ${PeakDir}/${Chip2}.narrowPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak
+bedtools intersect -a ${PeakDir}/${h2aZ_gt_M1}.broadPeak -b ${PeakDir}/${h2aZ_gp_M1}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak
+bedtools intersect -a ${PeakDir}/${h2aZ_gp_d3}.broadPeak -b ${PeakDir}/${h2aZ_gt_d3}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak
+bedtools intersect -a ${PeakDir}/${h2aZ_gt_d6}.broadPeak -b ${PeakDir}/${h2aZ_gp_d6}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak
+
+## report no. peaks in each peakfile
+wc -l * > peak_counts.txt
+
+## for each peakfile, calculate peak coverage
+GENOME_SIZE=38639769
+
+for f in *; do
+    awk -v file="$f" -v gsize="$GENOME_SIZE" '
+        $3 > $2 { sum += ($3 - $2) }
+        END {
+            pct = (sum / gsize) * 100
+            printf "%s\t%d\t%.4f%%\n", file, sum, pct
+        }
+    ' "$f"
+done
+
+
+## remove background peaks
+bedtools intersect -a  ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/fsd1_Consensus_Peaks.bed
+bedtools intersect -a  ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_M_Consensus_Peaks.bed
+bedtools intersect -a  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks.bed
+bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks.bed
+
 ## Use homer to make a consensus peakset
  ml Homer/5.1-foss-2023a-R-4.3.2
 
