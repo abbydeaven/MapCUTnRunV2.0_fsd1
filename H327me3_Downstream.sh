@@ -12,37 +12,36 @@
 
 cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
-outdir="./MappingOutput"
+dir=/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP
+outdir="/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
 Motfis="${outdir}/Motifs"
 
 ## Input control and rep information, using name:
-
+dir="/lustre2/scratch/ad45368/ChIPseq/PeritheciaChIPAnalysis/2025_ChIP_Reanalysis/MappingOutput/bamFiles"
 #Control1="143_144_ChIP_WT_gfp_trap_Rep1"
-dpf3_input_1='145_43_ChIP_WT_3dpf_input_Rep1'
+dpf3_input_1='145-43_ChIP_WT_3dpf_input_Rep1'
 dpf3_input_2='153_43_ChIP_WT_dpf3_Input_Rep1_S43_L002'
 
 dpf3_H3K27me3_1='145_44_ChIP_WT_3dpf_H3K27me3_Rep1'
 dpf3_H3K27me3_2='146_111_ChIP_WT_3dpf_H3K27me3_Rep2'
 dpf3_H3K27me3_3='152_35_ChIP_WT_3dpf_P_H3K27me3_Rep6'
 
-dpf6_H3K27me3_1='150_28_ChIP_WT_P_6dpf_H3K27me3_Rep2'
+dpf6_H3K27me3_1='150-28_ChIP_WT_P_6pf_H3K27me3_Rep2'
 dpf6_H3K27me3_2='151_128_ChIP_WT_P_6dpf_H3K27me3_Rep3'
 dpf6_H3K27me3_3='152_38_ChIP_WT_6dpf_P_H3K27me3_Rep5'
 
-Mycelia_H3K27me3_1='150_31_ChIP_WT_M_H3K27me3_Rep1'
-Mycelia_H3K27me3_2='151_130_ChIP_WT_M_H3K27me3_Rep2'
+Mycelia_H3K27me3_1='150-31_ChIP_WT_M_H3K27me3_Rep1'
+Mycelia_H3K27me3_2='151-130_ChIP_WT_M_H3K27me3_Rep2'
 ## Use bedtools to make a consensus peakset of peaks with 80% overlap in all samples
 ml BEDTools/2.31.1-GCC-13.3.0
 
-bedtools intersect -a $PeakDir/${dpf3_input_1}.broadPeak -b ${PeakDir}/${dpf3_input_2}.broadPeak  -f 0.5 -wa > ${PeakDir}/Input_consensus.narrowPeak
-bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}.broadPeak -b ${PeakDir}/${dpf3_H3K27me3_2}.broadPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak
-bedtools intersect -a ${PeakDir}/${h2aZ_gt_M1}.broadPeak -b ${PeakDir}/${h2aZ_gp_M1}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak
-bedtools intersect -a ${PeakDir}/${h2aZ_gp_d3}.broadPeak -b ${PeakDir}/${h2aZ_gt_d3}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak
-bedtools intersect -a ${PeakDir}/${h2aZ_gt_d6}.broadPeak -b ${PeakDir}/${h2aZ_gp_d6}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak
-
+bedtools intersect -a $PeakDir/${dpf3_input_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_input_2}_peaks.broadPeak  -f 0.5 -wa > ${PeakDir}/Input_consensus.narrowPeak
+bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf3_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf3_H3K27me3_Consensus.broadPeak
+bedtools intersect -a ${PeakDir}/${dpf6_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf6_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf6_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak
+bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${Mycelia_H3K27me3_2}_peaks.broadPeak -f 0.5 -wa > ${PeakDir}/Mycelia_H3K27me3_Consensus.broadPeak
 ## report no. peaks in each peakfile
 wc -l * > peak_counts.txt
 
