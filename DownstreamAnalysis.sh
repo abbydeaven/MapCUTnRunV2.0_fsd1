@@ -17,14 +17,14 @@ bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
 Motfis="${outdir}/Motifs"
-
+meta="${outdir}/Metaplots"
 ## Input control and rep information, using name:
 
 #Control1="143_144_ChIP_WT_gfp_trap_Rep1"
 Control2="153_44_ChIP_WT_dpf3_gfp_trap_Rep1"
 Control3="153_47_ChIP_WT_dpf6_gfp_trap_Rep1"
-Chip1="143_3_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
-Chip2="143_5_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
+fsd1_1="143_3_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
+fsd1_2="143_5_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
 
 h2aZ_gt_M1="153_50_ChIP_h2aZ_M_gfp_trap_Rep1"
 h2aZ_gp_M1="153_51_ChIP_h2aZ_M_GFP_Rep1"
@@ -35,11 +35,16 @@ h2aZ_gt_d3="153_53_ChIP_h2aZ_dpf3_gfp_trap_Rep1"
 h2aZ_gt_d6="153_56_ChIP_h2aZ_dpf6_gfp_trap_Rep1"
 h2aZ_gp_d6="153_57_ChIP_h2aZ_dpf6_GFP_Rep1"
 
+for f in *; do
+      name=$(echo "$f" | sed -E 's/\-/\_/')
+      mv $f $name
+      done
+
 ## Use bedtools to make a consensus peakset of peaks with 80% overlap in all samples
 ml BEDTools/2.31.1-GCC-13.3.0
 
 bedtools intersect -a $PeakDir/${Control2}.broadPeak -b ${PeakDir}/${Control3}.broadPeak  -f 0.5 -wa > ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
-bedtools intersect -a ${PeakDir}/${Chip1}.narrowPeak -b ${PeakDir}/${Chip2}.narrowPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak
+bedtools intersect -a ${PeakDir}/${fsd1_1}.narrowPeak -b ${PeakDir}/${fsd1_1}.narrowPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks.bed
 bedtools intersect -a ${PeakDir}/${h2aZ_gt_M1}.broadPeak -b ${PeakDir}/${h2aZ_gp_M1}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak
 bedtools intersect -a ${PeakDir}/${h2aZ_gp_d3}.broadPeak -b ${PeakDir}/${h2aZ_gt_d3}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak
 bedtools intersect -a ${PeakDir}/${h2aZ_gt_d6}.broadPeak -b ${PeakDir}/${h2aZ_gp_d6}.broadPeak -f 0.5 -wa > ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak
@@ -47,8 +52,9 @@ bedtools intersect -a ${PeakDir}/${h2aZ_gt_d6}.broadPeak -b ${PeakDir}/${h2aZ_gp
 ## report no. peaks in each peakfile
 wc -l * > peak_counts.txt
 
+
 ## for each peakfile, calculate peak coverage
-GENOME_SIZE=38639769
+GENOME_SIZE=41037538 
 
 for f in *; do
     awk -v file="$f" -v gsize="$GENOME_SIZE" '
@@ -61,9 +67,9 @@ for f in *; do
 done
 
 
-## remove background peaks
-bedtools intersect -a  ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/fsd1_Consensus_Peaks.bed
-bedtools intersect -a  ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_M_Consensus_Peaks.bed
+## remove background peaks. might not have to do this.
+#bedtools intersect -a  ${PeakDir}/fsd1_Consensus_Peaks_raw.narrowPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.9 -v >  ${PeakDir}/fsd1_Consensus_Peaks.bed
+bedtools intersect -a  ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.9 -v >  ${PeakDir}/h2aZ_M_Consensus_Peaks.bed
 bedtools intersect -a  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks.bed
 bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks.bed
 
@@ -80,5 +86,5 @@ ml ucsc/443
 bigWigMerge  ${bwdir}/${Control1}.bin_25.smooth_75Bulk.bw ${bwdir}/${Control2}.bin_25.smooth_75Bulk.bw ${bwdir}/${Control3}.bin_25.smooth_75Bulk.bw ${bwdir}/GFPtrap_Control_merge.bedGraph
 bedGraphToBigWig ${bwdir}/GFPtrap_Control_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/GFPtrap_Control_merge.bw
 
-bigWigMerge  ${bwdir}/${Chip1}.bin_25.smooth_75Bulk.bw ${bwdir}/${Chip2}.bin_25.smooth_75Bulk.bw ${bwdir}/fsd1_dpf6_merged.bedGraph
+bigWigMerge  ${bwdir}/${fsd1_1}.bin_25.smooth_75Bulk.bw ${bwdir}/${fsd1_2}.bin_25.smooth_75Bulk.bw ${bwdir}/fsd1_dpf6_merged.bedGraph
 bedGraphToBigWig ${bwdir}/fsd1_dpf6_merged.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/fsd1_dpf6_merged.bw
