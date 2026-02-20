@@ -42,6 +42,16 @@ bedtools intersect -a $PeakDir/${dpf3_input_1}_peaks.broadPeak -b ${PeakDir}/${d
 bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf3_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf3_H3K27me3_Consensus.broadPeak
 bedtools intersect -a ${PeakDir}/${dpf6_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf6_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf6_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak
 bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${Mycelia_H3K27me3_2}_peaks.broadPeak -f 0.5 -wa > ${PeakDir}/Mycelia_H3K27me3_Consensus.broadPeak
+
+## Intersect consensus peakset (made in R) with N. crassa promoters
+# First, make a bed file adding 500bp to the start site of each gene
+bedtools slop -s  -i ~/NcGenome/NcGenes.bed -g ~/NcGenome/chrom_sizes.txt -l 500 > ~/NcGenome/NcGenes_StartMinus500.bed
+bedtools intersect -a ~/NcGenome/NcGenes_StartMinus500.bed -b all_H3K27me3_Peaks.bed -f 0.25 -wa > H3K27me3_Gene_Promoters.bed
+
+
+
+
+
 ## report no. peaks in each peakfile
 wc -l * > peak_counts.txt
 
