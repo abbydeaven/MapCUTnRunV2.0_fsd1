@@ -83,7 +83,7 @@ findMotifsGenome.pl ${PeakDir}/fsd1_GFPtrap_Peaks.bed /home/ad45368/NcGenome/GCA
 
 ml ucsc/443
 
-bigWigMerge  ${bwdir}/${Control1}.bin_25.smooth_75Bulk.bw ${bwdir}/${Control2}.bin_25.smooth_75Bulk.bw ${bwdir}/${Control3}.bin_25.smooth_75Bulk.bw ${bwdir}/GFPtrap_Control_merge.bedGraph
+bigWigMerge  ${bwdir}/153_44_ChIP_WT_dpf3_gfp_trap_Rep1_S44_L002.bin_25.smooth_75Bulk.bw ${bwdir}/${Control3}.bin_25.smooth_75Bulk.bw ${bwdir}/GFPtrap_Control_merge.bedGraph
 bedGraphToBigWig ${bwdir}/GFPtrap_Control_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/GFPtrap_Control_merge.bw
 
 bigWigMerge  ${bwdir}/${fsd1_1}.bin_25.smooth_75Bulk.bw ${bwdir}/${fsd1_2}.bin_25.smooth_75Bulk.bw ${bwdir}/fsd1_dpf6_merged.bedGraph
