@@ -73,13 +73,13 @@ bedtools intersect -a  ${PeakDir}/h2aZ_M_Consensus_Peaks_raw.broadPeak -b ${Peak
 bedtools intersect -a  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf3_Consensus_Peaks.bed
 bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak -f 0.8 -v >  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks.bed
 
-## Use homer to make a consensus peakset
+## Use homer to identify motifs (findMotifsGenome). then, run homer to identify OTHER TF motifs in fsd-1 target promoters.
  ml Homer/5.1-foss-2023a-R-4.3.2
 
-mergePeaks -d 100 ${PeakDir}/${Control1}_peaks.narrowPeak ${PeakDir}/${Control2}_peaks.narrowPeak ${PeakDir}/${Control3}_peaks.narrowPeak -venn ${PeakDir}/control_peaks.txt  > ${PeakDir}/WT_GFPtrap_Peaks.bed
-mergePeaks -d 100 ${PeakDir}/${Chip1}_peaks.narrowPeak ${PeakDir}/${Chip2}_peaks.narrowPeak -venn ${PeakDir}/fsd1_peaks.txt -prefix fsd1 > ${PeakDir}/fsd1_GFPtrap_Peaks.bed
+#mergePeaks -d 100 ${PeakDir}/${Control1}_peaks.narrowPeak ${PeakDir}/${Control2}_peaks.narrowPeak ${PeakDir}/${Control3}_peaks.narrowPeak -venn ${PeakDir}/control_peaks.txt  > ${PeakDir}/WT_GFPtrap_Peaks.bed
+#mergePeaks -d 100 ${PeakDir}/${Chip1}_peaks.narrowPeak ${PeakDir}/${Chip2}_peaks.narrowPeak -venn ${PeakDir}/fsd1_peaks.txt -prefix fsd1 > ${PeakDir}/fsd1_GFPtrap_Peaks.bed
 
-findMotifsGenome.pl ${PeakDir}/fsd1_GFPtrap_Peaks.bed /home/ad45368/NcGenome/GCA_000182925.2_NC12_genomic.fna ${Motifs}/ -size given -bg ${PeakDir}/WT_GFPtrap_Peaks.bed
+findMotifsGenome.pl ${PeakDir}/fsd1_Consensus_Peaks.bed /home/ad45368/NcGenome/GCA_000182925.2_NC12_genomic.fna ${Motifs}/ -size given -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
 
 ml ucsc/443
 
