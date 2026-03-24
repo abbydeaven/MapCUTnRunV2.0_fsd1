@@ -12,7 +12,7 @@
 
 cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
-outdir="./MappingOutput"
+outdir="/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
@@ -79,7 +79,9 @@ bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${P
 #mergePeaks -d 100 ${PeakDir}/${Control1}_peaks.narrowPeak ${PeakDir}/${Control2}_peaks.narrowPeak ${PeakDir}/${Control3}_peaks.narrowPeak -venn ${PeakDir}/control_peaks.txt  > ${PeakDir}/WT_GFPtrap_Peaks.bed
 #mergePeaks -d 100 ${PeakDir}/${Chip1}_peaks.narrowPeak ${PeakDir}/${Chip2}_peaks.narrowPeak -venn ${PeakDir}/fsd1_peaks.txt -prefix fsd1 > ${PeakDir}/fsd1_GFPtrap_Peaks.bed
 
-findMotifsGenome.pl ${PeakDir}/fsd1_Consensus_Peaks.bed /home/ad45368/NcGenome/GCA_000182925.2_NC12_genomic.fna ${Motifs}/ -size given -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+## IMPORTANT!! downgrade to an earlier version of perl for compatibility.
+ml Perl/5.34.0-GCCcore-11.2.0
+findMotifsGenome.pl ${PeakDir}/fsd1_Consensus_Peaks.bed ncrassa ${Motifs}/ -size given -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
 
 ml ucsc/443
 
