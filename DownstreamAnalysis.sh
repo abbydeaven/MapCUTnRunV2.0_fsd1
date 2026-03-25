@@ -83,6 +83,10 @@ bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${P
 ml Perl/5.34.0-GCCcore-11.2.0
 findMotifsGenome.pl ${PeakDir}/fsd1_Consensus_Peaks.bed ncrassa ${Motifs}/ -size given -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
 
+# annotate peaks + identify where motifs are. motif1 = highest prevalence (~10%), most similar to ndt80
+/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Peaks/fsd1_Consensus_Peaks.bed Ncrassa /scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Motifs/ -size 200 -bg /scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Peaks/GFPtrap_Consensus_Peaks.narrowPeak
+annotatePeaks.pl ${PeakDir}/fsd1_Consensus_Peaks.bed Ncrassa -m ${Motifs}/homerResults/motif1.motif > ${Motifs}/motif1_positions.txt
+
 ml ucsc/443
 
 bigWigMerge  ${bwdir}/153_44_ChIP_WT_dpf3_gfp_trap_Rep1_S44_L002.bin_25.smooth_75Bulk.bw ${bwdir}/${Control3}.bin_25.smooth_75Bulk.bw ${bwdir}/GFPtrap_Control_merge.bedGraph
