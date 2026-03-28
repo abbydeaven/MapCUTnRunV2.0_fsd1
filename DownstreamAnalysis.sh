@@ -16,7 +16,7 @@ outdir="/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
-Motfis="${outdir}/Motifs"
+Motifs="${outdir}/Motifs"
 meta="${outdir}/Metaplots"
 ## Input control and rep information, using name:
 
@@ -81,11 +81,13 @@ bedtools intersect -a  ${PeakDir}/h2aZ_dpf6_Consensus_Peaks_raw.broadPeak -b ${P
 
 ## IMPORTANT!! downgrade to an earlier version of perl for compatibility.
 ml Perl/5.34.0-GCCcore-11.2.0
-findMotifsGenome.pl ${PeakDir}/fsd1_Consensus_Peaks.bed ncrassa ${Motifs}/ -size given -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+findMotifsGenome.pl ${PeakDir}/fsd1_peaks_devup.bed Ncrassa ${Motifs}/Development_Up -size 50 -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+findMotifsGenome.pl ${PeakDir}/fsd1_peaks_devdown.bed Ncrassa ${Motifs}/Development_Down -size 50 -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+findMotifsGenome.pl ${PeakDir}/fsd1_peaks_nondev.bed Ncrassa ${Motifs}/NonDevelopment -size 50 -bg ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
 
 # annotate peaks + identify where motifs are. motif1 = highest prevalence (~10%), most similar to ndt80
 /scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Peaks/fsd1_Consensus_Peaks.bed Ncrassa /scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Motifs/ -size 200 -bg /scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/Peaks/GFPtrap_Consensus_Peaks.narrowPeak
-annotatePeaks.pl ${PeakDir}/fsd1_Consensus_Peaks.bed Ncrassa -m ${Motifs}/homerResults/motif1.motif > ${Motifs}/motif1_positions.txt
+annotatePeaks.pl ${PeakDir}/fsd1_Consensus_Peaks.bed Ncrassa -gtf ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf > ${Motifs}/fsd1_annotated_peaks.txt
 
 ml ucsc/443
 
