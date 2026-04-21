@@ -90,3 +90,47 @@ bedGraphToBigWig ${bwdir}/MyceliaH3K27me3_merge.bedGraph /home/ad45368/chrom_siz
 
 bigWigMerge  ${bwdir}/150-28_ChIP_WT_P_6pf_H3K27me3_Rep2_S28_L002.bin_25.smooth_75Bulk.bw ${bwdir}/152-38_ChIP_WT_6dpf_P_H3K27me3_Rep5_S38_L006.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K27me3_merge.bedGraph
 bedGraphToBigWig ${bwdir}/dpf6H3K27me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K27me3_merge.bw
+
+ml ucsc/443
+
+bigWigMerge ${bwdir}/150-26_ChIP_WT_P_3dpf_H3K36me3_Rep1_S26_L002.bin_25.smooth_75Bulk.bw ${bwdir}/151-127_ChIP_WT_P_3dpf_H3K36me3_Rep2_.bin_25.smooth_75Bulk.bw ${bwdir}/dpf3H3K36me3_merge.bedGraph
+bigWigMerge ${bwdir}/150-32_ChIP_WT_M_H3K36me3_Rep1_S32_L002.bin_25.smooth_75Bulk.bw ${bwdir}/152-30_ChIP_WT_H3K36me3_Rep4_S30_L006.bin_25.smooth_75Bulk.bw ${bwdir}/MyceliaH3K36me3_merge.bedGraph
+bigWigMerge ${bwdir}/152-39_ChIP_WT_6dpf_P_H3K36me3_Rep5_S39_L006.bin_25.smooth_75Bulk.bw ${bwdir}/151-129_ChIP_WT_P_6pf_H3K36me3_Rep3_.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K36me3_merge.bedGraph
+
+bedGraphToBigWig ${bwdir}/dpf3H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf3H3K36me3_merge.bw
+bedGraphToBigWig ${bwdir}/dpf6H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K36me3_merge.bw
+bedGraphToBigWig ${bwdir}/MyceliaH3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/MyceliaH3K36me3_merge.bw
+
+ml deepTools/3.5.5-gfbf-2023a
+base="/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP"
+gfp_base="/lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig"
+meta=${base}/Meta
+ml deepTools/3.5.5-gfbf-2023a
+
+computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/SRR5177530.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177522.bw \
+    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3"  "Mycelia RNA" "dpf6 H3K27me3" "dpf3 H3K36me3" "dpf6 H3K36me3" "dpf6 RNA" \
+    -o ${meta}/h3k27genes.gz \
+    --outFileSortedRegions ${meta}/h3k27me3_genes_mat.bed \
+    -p 6
+
+computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw /lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig/153_51_ChIP_h2aZ_M_GFP_Rep1_.bin_25.smooth_75Bulk.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw /lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig/153_57_ChIP_h2aZ_dpf6_GFP_Rep1_.bin_25.smooth_75Bulk.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
+    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3" "Mycelia H2A.Z" "Mycelia RNA" "dpf6 H3K27me3" "dpf6 H3K36me3" "dpf6 H2A.Z" "dpf6 RNA" \
+    -o ${meta}/h3k27genes_H2AZ.gz \
+    --missingDataAsZero \
+    --outFileSortedRegions ${meta}/h3k27me3_genes_H2AZ_mat.bed \
+    -p 6
+
+   plotHeatmap --matrixFile ${meta}/h3k27genes_H2AZ.bed -o ${meta}/h3k27me3_genes_H2AZ_mat.png --outFileNameMatrix ${meta}/h3k27me3_genes_H2AZ_matout.gz       --colorMap Greens Oranges Blues Reds Greens Oranges Blues Reds       --zMax 70 30 10 60 70 30 10   --missingDataColor white --heatmapHeight 20
+
+computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
+    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3"  "Mycelia RNA" "dpf6 H3K27me3" "dpf3 H3K36me3" "dpf6 H3K36me3" "dpf6 RNA" \
+    -o ${meta}/h3k27genes.gz \
+    --outFileSortedRegions ${meta}/h3k27me3_genes_mat.bed \
+    -p 6
+
+   plotHeatmap --matrixFile ${meta}/h3k27genes.gz -o ${meta}/h3k27me3_gene.png --outFileNameMatrix ${meta}/h3k27me3_genes_matout.gz       --colorMap Greens Oranges Reds Greens Oranges Oranges Reds       --zMax 70 30 10 60 70 30 10   --missingDataColor white --heatmapHeight 20
+
+
