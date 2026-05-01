@@ -88,7 +88,7 @@ ml ucsc/443
 bigWigMerge  ${bwdir}/151-130_ChIP_WT_M_H3K27me3_Rep2_S153_L002.bin_25.smooth_75Bulk.bw ${bwdir}/150-31_ChIP_WT_M_H3K27me3_Rep1_S31_L002.bin_25.smooth_75Bulk.bw  ${bwdir}/MyceliaH3K27me3_merge.bedGraph
 bedGraphToBigWig ${bwdir}/MyceliaH3K27me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/MyceliaH3K27me3_merge.bw
 
-bigWigMerge  ${bwdir}/150-28_ChIP_WT_P_6pf_H3K27me3_Rep2_S28_L002.bin_25.smooth_75Bulk.bw ${bwdir}/152-38_ChIP_WT_6dpf_P_H3K27me3_Rep5_S38_L006.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K27me3_merge.bedGraph
+bigWigMerge  ${bwdir}/150-28_ChIP_WT_P_6pf_H3K27me3_Rep2_S28_L002.bin_25.smooth_75Bulk.bw ${bwdir}/151-128_ChIP_WT_P_6pf_H3K27me3_Rep3_.bin_25.smooth_75Bulk.bw ${bwdir}/152-38_ChIP_WT_6dpf_P_H3K27me3_Rep5.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K27me3_merge.bedGraph
 bedGraphToBigWig ${bwdir}/dpf6H3K27me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K27me3_merge.bw
 
 ml ucsc/443
@@ -100,6 +100,32 @@ bigWigMerge ${bwdir}/152-39_ChIP_WT_6dpf_P_H3K36me3_Rep5_S39_L006.bin_25.smooth_
 bedGraphToBigWig ${bwdir}/dpf3H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf3H3K36me3_merge.bw
 bedGraphToBigWig ${bwdir}/dpf6H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K36me3_merge.bw
 bedGraphToBigWig ${bwdir}/MyceliaH3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/MyceliaH3K36me3_merge.bw
+
+### Merge and logscale RNAseq files
+bigWigMerge ${bwdir}/SRR5177521.bw ${bwdir}/SRR5177522.bw ${bwdir}/dpf6_RNA.bedGraph
+awk '{ $4=(log($4+1)/log(2)); } 1' < ${bwdir}/dpf6_RNA.bedGraph > ${bwdir}/dpf6_logRNA.bedGraph
+sort -k1,1 -k2,2n ${bwdir}/dpf6_logRNA.bedGraph > ${bwdir}/dpf6_logRNAsort.bedGraph
+bedGraphToBigWig ${bwdir}/dpf6_logRNAsort.bedGraph /home/ad45368/chrom_sizes.txt ${bwdir}/dpf6_logRNA.bw
+
+bigWigMerge ${bwdir}/SRR5177527.bw ${bwdir}/SRR5177528.bw ${bwdir}/dpf3_RNA.bedGraph
+awk '{ $4=(log($4+1)/log(2)); } 1' < ${bwdir}/dpf3_RNA.bedGraph > ${bwdir}/dpf3_logRNA.bedGraph
+sort -k1,1 -k2,2n ${bwdir}/dpf3_logRNA.bedGraph > ${bwdir}/dpf3_logRNAsort.bedGraph
+bedGraphToBigWig ${bwdir}/dpf3_logRNAsort.bedGraph /home/ad45368/chrom_sizes.txt ${bwdir}/dpf3_logRNA.bw
+
+bigWigMerge ${bwdir}/SRR5177529.bw ${bwdir}/SRR5177530.bw ${bwdir}/Mycelia_RNA.bedGraph
+awk '{ $4=(log($4+1)/log(2)); } 1' < ${bwdir}/Mycelia_RNA.bedGraph > ${bwdir}/Mycelia_logRNA.bedGraph
+sort -k1,1 -k2,2n ${bwdir}/Mycelia_logRNA.bedGraph > ${bwdir}/Mycelia_logRNAsort.bedGraph
+bedGraphToBigWig ${bwdir}/Mycelia_logRNAsort.bedGraph /home/ad45368/chrom_sizes.txt ${bwdir}/Mycelia_logRNA.bw
+
+bigWigMerge ${bwdir}/150-32_ChIP_WT_M_H3K36me3_Rep1_S32_L002.bin_25.smooth_75Bulk.bw ${bwdir}/152-30_ChIP_WT_H3K36me3_Rep4_S30_L006.bin_25.smooth_75Bulk.bw ${bwdir}/MyceliaH3K36me3_merge.bedGraph
+bigWigMerge ${bwdir}/152-39_ChIP_WT_6dpf_P_H3K36me3_Rep5_S39_L006.bin_25.smooth_75Bulk.bw ${bwdir}/151-129_ChIP_WT_P_6pf_H3K36me3_Rep3_.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K36me3_merge.bedGraph
+
+bedGraphToBigWig ${bwdir}/dpf3H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf3H3K36me3_merge.bw
+bedGraphToBigWig ${bwdir}/dpf6H3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K36me3_merge.bw
+bedGraphToBigWig ${bwdir}/MyceliaH3K36me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/MyceliaH3K36me3_merge.bw
+
+
+
 
 ml deepTools/3.5.5-gfbf-2023a
 base="/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP"
