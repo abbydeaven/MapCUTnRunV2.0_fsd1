@@ -12,12 +12,13 @@
 
 cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
-dir=/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP
-outdir="/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP"
+base=/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP
+outdir="/lustre2/scratch/ad45368/ChIPseq/FinalH3k27me3_ChIP/MappingOutput"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
 Motfis="${outdir}/Motifs"
+meta="${outdir}/Meta"
 
 ## Input control and rep information, using name:
 dir="/lustre2/scratch/ad45368/ChIPseq/PeritheciaChIPAnalysis/2025_ChIP_Reanalysis/MappingOutput/bamFiles"
@@ -48,9 +49,9 @@ bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${Peak
 bedtools slop -s  -i ~/NcGenome/NcGenes.bed -g ~/NcGenome/chrom_sizes.txt -l 500 > ~/NcGenome/NcGenes_StartMinus500.bed
 bedtools intersect -a ~/NcGenome/NcGenes_StartMinus500.bed -b all_H3K27me3_Peaks.bed -f 0.25 -wa > H3K27me3_Gene_Promoters.bed
 
-
-
-
+# merge bam files from input for peak calling 
+ml SAMtools/1.21-GCC-13.3.0
+samtools merge -o Input_Merge.bam 145_43_ChIP_WT_3dpf_input_Rep1.bam 153_41_ChIP_WT_M_Input_Rep1_S41_L002.bam 155-12_ChIP_WT_M_input_Rep3.bam 155-19_ChIP_WT_6dpf_input_Rep4.bam
 
 ## report no. peaks in each peakfile
 wc -l * > peak_counts.txt
@@ -141,17 +142,17 @@ computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.be
     -p 6
 
 computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
-    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw /lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig/153_51_ChIP_h2aZ_M_GFP_Rep1_.bin_25.smooth_75Bulk.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw /lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig/153_57_ChIP_h2aZ_dpf6_GFP_Rep1_.bin_25.smooth_75Bulk.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
-    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3" "Mycelia H2A.Z" "Mycelia RNA" "dpf6 H3K27me3" "dpf6 H3K36me3" "dpf6 H2A.Z" "dpf6 RNA" \
-    -o ${meta}/h3k27genes_H2AZ.gz \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/dpf6_logRNA.bw ${gfp_base}/fsd1_dpf6_merged.bw \
+    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3" "Mycelia RNA" "dpf6 H3K27me3" "dpf6 H3K36me3" "dpf6 RNA" "dpf6 FSD-1" \
+    -o ${meta}/h3k27genes_k36_fsd1.gz \
     --missingDataAsZero \
-    --outFileSortedRegions ${meta}/h3k27me3_genes_H2AZ_mat.bed \
+    --outFileSortedRegions ${meta}/h3k27me3_genes_fsd1_mat.bed \
     -p 6
 
-   plotHeatmap --matrixFile ${meta}/h3k27genes_H2AZ.bed -o ${meta}/h3k27me3_genes_H2AZ_mat.png --outFileNameMatrix ${meta}/h3k27me3_genes_H2AZ_matout.gz       --colorMap Greens Oranges Blues Reds Greens Oranges Blues Reds       --zMax 70 30 10 60 70 30 10   --missingDataColor white --heatmapHeight 20
+   plotHeatmap --matrixFile ${meta}/h3k27genes_k36_fsd1.bed -o ${meta}/h3k27genes_k36_fsd1.png --outFileNameMatrix ${meta}/h3k27genes_k36_fsd1out.gz       --colorMap Greens Oranges Reds Greens Oranges Reds Purples      --zMax 70 30 10 70 30 10 30 --yMax 100 25 10 100 25 10 20 --missingDataColor white --heatmapHeight 20
 
 computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
-    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/Mycelia_logRNA.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
     --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3"  "Mycelia RNA" "dpf6 H3K27me3" "dpf3 H3K36me3" "dpf6 H3K36me3" "dpf6 RNA" \
     -o ${meta}/h3k27genes.gz \
     --outFileSortedRegions ${meta}/h3k27me3_genes_mat.bed \
