@@ -28,21 +28,24 @@ dpf3_input_2='153_43_ChIP_WT_dpf3_Input_Rep1_S43_L002'
 
 dpf3_H3K27me3_1='145_44_ChIP_WT_3dpf_H3K27me3_Rep1'
 dpf3_H3K27me3_2='146_111_ChIP_WT_3dpf_H3K27me3_Rep2'
-dpf3_H3K27me3_3='152_35_ChIP_WT_3dpf_P_H3K27me3_Rep6'
+dpf3_H3K27me3_3='152-35_ChIP_WT_3dpf_P_H3K27me3_Rep6_S35_L00'
 
-dpf6_H3K27me3_1='150-28_ChIP_WT_P_6pf_H3K27me3_Rep2'
+dpf6_H3K27me3_1='150_28_ChIP_WT_P_6pf_H3K27me3_Rep2'
 dpf6_H3K27me3_2='151_128_ChIP_WT_P_6dpf_H3K27me3_Rep3'
-dpf6_H3K27me3_3='152_38_ChIP_WT_6dpf_P_H3K27me3_Rep5'
+dpf6_H3K27me3_3='152-38_ChIP_WT_6dpf_P_H3K27me3_Rep5_S38_L006'
 
-Mycelia_H3K27me3_1='150-31_ChIP_WT_M_H3K27me3_Rep1'
-Mycelia_H3K27me3_2='151-130_ChIP_WT_M_H3K27me3_Rep2'
+Mycelia_H3K27me3_1='150_31_ChIP_WT_M_H3K27me3_Rep1'
+Mycelia_H3K27me3_2='151_130_ChIP_WT_M_H3K27me3_Rep2'
+Mycelia_H3K27me3_3='152_16_ChIP_WT_H3K27me3_Rep3'
+Mycelia_H3K27me3_4='152_29_ChIP_WT_H3K27me3_Rep4'
+
 ## Use bedtools to make a consensus peakset of peaks with 80% overlap in all samples
 ml BEDTools/2.31.1-GCC-13.3.0
 
-bedtools intersect -a $PeakDir/${dpf3_input_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_input_2}_peaks.broadPeak  -f 0.5 -wa > ${PeakDir}/Input_consensus.narrowPeak
-bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf3_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf3_H3K27me3_Consensus.broadPeak
-bedtools intersect -a ${PeakDir}/${dpf6_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf6_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf6_H3K27me3_3}_broadPeak.bed -f 0.5 -wa > ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak
-bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${Mycelia_H3K27me3_2}_peaks.broadPeak -f 0.5 -wa > ${PeakDir}/Mycelia_H3K27me3_Consensus.broadPeak
+bedtools intersect -a $PeakDir/${dpf3_input_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_input_2}_peaks.broadPeak  -f 0.3 -wa > ${PeakDir}/Input_consensus.narrowPeak
+bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf3_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf3_H3K27me3_3}_peaks.broadPeak -f 0.3 -wa > ${PeakDir}/dpf3_H3K27me3_Consensus.broadPeak
+bedtools intersect -a ${PeakDir}/${dpf6_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf6_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf6_H3K27me3_3}_peaks.broadPeak -f 0.3 -wa > ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak
+bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${Mycelia_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${Mycelia_H3K27me3_3}_peaks.broadPeak ${PeakDir}/${Mycelia_H3K27me3_4}_peaks.broadPeak -f 0.3 -wa > ${PeakDir}/Mycelia_H3K27me3_Consensus.broadPeak
 
 ## Intersect consensus peakset (made in R) with N. crassa promoters
 # First, make a bed file adding 500bp to the start site of each gene
@@ -91,6 +94,9 @@ bedGraphToBigWig ${bwdir}/MyceliaH3K27me3_merge.bedGraph /home/ad45368/chrom_siz
 
 bigWigMerge  ${bwdir}/150-28_ChIP_WT_P_6pf_H3K27me3_Rep2_S28_L002.bin_25.smooth_75Bulk.bw ${bwdir}/151-128_ChIP_WT_P_6pf_H3K27me3_Rep3_.bin_25.smooth_75Bulk.bw ${bwdir}/152-38_ChIP_WT_6dpf_P_H3K27me3_Rep5.bin_25.smooth_75Bulk.bw ${bwdir}/dpf6H3K27me3_merge.bedGraph
 bedGraphToBigWig ${bwdir}/dpf6H3K27me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf6H3K27me3_merge.bw
+
+bigWigMerge  ${bwdir}/145_44_ChIP_WT_3dpf_H3K27me3_Rep1.bin_25.smooth_75Bulk.bw ${bwdir}/152-35_ChIP_WT_3dpf_P_H3K27me3_Rep6_S35_L00.bin_25.smooth_75Bulk.bw ${bwdir}/146_111_ChIP_WT_3dpf_H3K27me3_Rep2.bin_25.smooth_75Bulk.bw ${bwdir}/dpf3H3K27me3_merge.bedGraph
+bedGraphToBigWig ${bwdir}/dpf3H3K27me3_merge.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/dpf3H3K27me3_merge.bw
 
 ml ucsc/443
 
@@ -149,7 +155,19 @@ computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.be
     --outFileSortedRegions ${meta}/h3k27me3_genes_fsd1_mat.bed \
     -p 6
 
-   plotHeatmap --matrixFile ${meta}/h3k27genes_k36_fsd1.bed -o ${meta}/h3k27genes_k36_fsd1.png --outFileNameMatrix ${meta}/h3k27genes_k36_fsd1out.gz       --colorMap Greens Oranges Reds Greens Oranges Reds Purples      --zMax 70 30 10 70 30 10 30 --yMax 100 25 10 100 25 10 20 --missingDataColor white --heatmapHeight 20
+   plotHeatmap --matrixFile ${meta}/h3k27genes_k36_fsd1.gz -o ${meta}/h3k27genes_k36_fsd1.png --outFileNameMatrix ${meta}/h3k27genes_k36_fsd1out.gz       --colorMap Greens Oranges Reds Greens Oranges Reds Purples   --sortUsingSamples 2 5 --zMax 70 30 10 70 30 10 30 --yMax 100 25 10 100 25 10 20 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
+
+## do a zoomed-in heatmap with H3K27 + FSD-1 only
+
+computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${gfp_base}/fsd1_dpf6_merged.bw \
+    --samplesLabel "Mycelia H3K27me3" "dpf6 H3K27me3" "dpf6 FSD-1" \
+    -o ${meta}/h3k27genes_fsd1.gz \
+    --missingDataAsZero \
+    --outFileSortedRegions ${meta}/h3k27genes_fsd1.bed \
+    -p 6
+
+   plotHeatmap --matrixFile ${meta}/h3k27genes_fsd1.gz -o ${meta}/h3k27genes_fsd1.png --outFileNameMatrix ${meta}/h3k27genes_fsd1out.gz       --colorMap Greens Greens Purples      --zMax 70 70  30 --missingDataColor white --heatmapHeight 18 --heatmapWidth 8 --sortUsingSamples 3 --whatToShow 'heatmap and colorbar'
 
 computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
     -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/Mycelia_logRNA.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177521_log.bw \
