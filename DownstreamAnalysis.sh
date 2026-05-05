@@ -96,3 +96,10 @@ bedGraphToBigWig ${bwdir}/GFPtrap_Control_merge.bedGraph /home/ad45368/chrom_siz
 
 bigWigMerge  ${bwdir}/${fsd1_1}.bin_25.smooth_75Bulk.bw ${bwdir}/${fsd1_2}.bin_25.smooth_75Bulk.bw ${bwdir}/fsd1_dpf6_merged.bedGraph
 bedGraphToBigWig ${bwdir}/fsd1_dpf6_merged.bedGraph /home/ad45368/chrom_sizes.txt  ${bwdir}/fsd1_dpf6_merged.bw
+
+
+## make fsd1 sashimi plots
+. env/ggsashimi/bin/activate
+ ~/ggsashimi/ggsashimi.py -b fsd1_dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png
+[W::hts_idx_load3] The index file is older than the data file: ../MappingOutput/Temp/SRR5177527_tmp3.bam.bai
+
