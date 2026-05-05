@@ -99,7 +99,15 @@ bedGraphToBigWig ${bwdir}/fsd1_dpf6_merged.bedGraph /home/ad45368/chrom_sizes.tx
 
 
 ## make fsd1 sashimi plots
-. env/ggsashimi/bin/activate
- ~/ggsashimi/ggsashimi.py -b fsd1_dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png
-[W::hts_idx_load3] The index file is older than the data file: ../MappingOutput/Temp/SRR5177527_tmp3.bam.bai
+ml R/4.5.1-gfbf-2025a
+ml R-bundle-CRAN/2025.10-foss-2025a
 
+. env/ggsashimi/bin/activate
+ ~/ggsashimi/ggsashimi.py -b fsd1_dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png python ~/ggsashimi/ggsashimi.py -b dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -o 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png -P palette.txt
+
+ #palette:
+ #DE9ED6
+#CE6DBD
+#A55194
+#7B4173
+#5FA2A4FF
