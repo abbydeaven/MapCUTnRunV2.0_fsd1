@@ -140,6 +140,19 @@ gfp_base="/lustre2/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput/bigWig"
 meta=${base}/Meta
 ml deepTools/3.5.5-gfbf-2023a
 
+
+### refine mycelia only category
+
+computeMatrix reference-point --referencePoint TSS  -R ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw  ${base}/bigWig/dpf6H3K27me3_merge.bw \
+    --samplesLabel "Mycelia H3K27me3" "dpf6 H3K27me3"  \
+    -o ${meta}/h3k27genes_myceliaonly.gz \
+    --outFileSortedRegions ${meta}/h3k27me3_myceliaonly_genes_mat.bed \
+    -p 6
+   plotHeatmap --matrixFile ${meta}/h3k27genes_myceliaonly.gz -o ${meta}/h3k27genes_myceliaonly.png --outFileNameMatrix ${meta}/h3k27genes_myceliaonlymat.gz   --outFileSortedRegions h3k27genes_myceliaonlymat_sorted.txt    --colorMap Greens --kmeans 2 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
+
+
+
 computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
     -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/SRR5177530.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf3H3K36me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/SRR5177522.bw \
     --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3"  "Mycelia RNA" "dpf6 H3K27me3" "dpf3 H3K36me3" "dpf6 H3K36me3" "dpf6 RNA" \
