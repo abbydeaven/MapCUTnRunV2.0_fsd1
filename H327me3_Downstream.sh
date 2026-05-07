@@ -47,6 +47,10 @@ bedtools intersect -a ${PeakDir}/${dpf3_H3K27me3_1}_peaks.broadPeak -b ${PeakDir
 bedtools intersect -a ${PeakDir}/${dpf6_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${dpf6_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${dpf6_H3K27me3_3}_peaks.broadPeak -f 0.3 -wa > ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak
 bedtools intersect -a ${PeakDir}/${Mycelia_H3K27me3_1}_peaks.broadPeak -b ${PeakDir}/${Mycelia_H3K27me3_2}_peaks.broadPeak ${PeakDir}/${Mycelia_H3K27me3_3}_peaks.broadPeak ${PeakDir}/${Mycelia_H3K27me3_4}_peaks.broadPeak -f 0.3 -wa > ${PeakDir}/Mycelia_H3K27me3_Consensus.broadPeak
 
+## intersect mycelia only windows w/ perithecia peaks 
+bedtools intersect -a ${base}/MyceliaOnlyK27Doms.bed -b ${PeakDir}/dpf6_H3K27me3_Consensus.broadPeak -v -f 1 -wa > ${base}/myceliaonly_true.bed
+
+
 ## Intersect consensus peakset (made in R) with N. crassa promoters
 # First, make a bed file adding 500bp to the start site of each gene
 bedtools slop -s  -i ~/NcGenome/NcGenes.bed -g ~/NcGenome/chrom_sizes.txt -l 500 > ~/NcGenome/NcGenes_StartMinus500.bed
@@ -141,6 +145,17 @@ meta=${base}/Meta
 ml deepTools/3.5.5-gfbf-2023a
 
 
+computeMatrix scale-regions   -R ${base}/SharedDoms.bed ${base}/PeritheciaOnlyK27Doms.bed ${base}/MyceliaOnlyK27Doms.bed -b 500 -a 500 \
+    -S ${base}/bigWig/MyceliaH3K27me3_merge.bw ${base}/bigWig_H3K36/MyceliaH3K36me3_merge.bw  ${base}/bigWig/WT_mycelia_log.bw ${base}/bigWig/dpf6H3K27me3_merge.bw ${base}/bigWig_H3K36/dpf6H3K36me3_merge.bw ${base}/bigWig/dpf6_logRNA.bw ${gfp_base}/fsd1_dpf6_merged.bw \
+    --samplesLabel "Mycelia H3K27me3" "Mycelia H3K36me3" "Mycelia RNA" "dpf6 H3K27me3" "dpf6 H3K36me3" "dpf6 RNA" "dpf6 FSD-1" \
+    -o ${meta}/h3k27genes_k36_domains.gz \
+    --missingDataAsZero \
+    --outFileSortedRegions ${meta}/h3k27genes_k36_domains.bed \
+    -p 6
+
+   plotHeatmap --matrixFile ${meta}/h3k27genes_k36_domains.gz -o ${meta}/h3k27genes_k36_fsd1.png --outFileSortedRegions ${meta}/h3k27genes_k36_domains.bed      --colorMap Greens Oranges Reds Greens Oranges Reds Purples   --sortUsingSamples 2 5 --zMax 70 30 10 70 30 10 30 --yMax 100 25 10 100 25 10 20 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
+
+
 ### refine mycelia only category
 
 computeMatrix reference-point --referencePoint TSS  -R ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
@@ -149,7 +164,7 @@ computeMatrix reference-point --referencePoint TSS  -R ${base}/MyceliaOnlyK27Gen
     -o ${meta}/h3k27genes_myceliaonly.gz \
     --outFileSortedRegions ${meta}/h3k27me3_myceliaonly_genes_mat.bed \
     -p 6
-   plotHeatmap --matrixFile ${meta}/h3k27genes_myceliaonly.gz -o ${meta}/h3k27genes_myceliaonly.png --outFileNameMatrix ${meta}/h3k27genes_myceliaonlymat.gz   --outFileSortedRegions h3k27genes_myceliaonlymat_sorted.txt    --colorMap Greens --kmeans 2 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
+   plotHeatmap --matrixFile ${meta}/h3k27genes_myceliaonly.gz -o ${meta}/h3k27genes_myceliaonly.png --outFileSortedRegions ${meta}/h3k27me3_myceliaonly_genes_mat.bed    --outFileSortedRegions h3k27genes_myceliaonlymat_sorted.txt    --colorMap Greens --kmeans 2 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
 
 
 
