@@ -185,6 +185,12 @@ computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.be
 
    plotHeatmap --matrixFile ${meta}/h3k27genes_k36_fsd1.gz -o ${meta}/h3k27genes_k36_fsd1.png --outFileNameMatrix ${meta}/h3k27genes_k36_fsd1out.gz       --colorMap Greens Oranges Reds Greens Oranges Reds Purples   --sortUsingSamples 2 5 --zMax 70 30 10 70 30 10 30 --yMax 100 25 10 100 25 10 20 --heatmapWidth 6 --missingDataColor white --heatmapHeight 20
 
+   plotProfile --matrixFile ${meta}/h3k27genes_k36_fsd1.gz -o ${meta}/h3k27genes_k36_fsd1metap.png --numPlotsPerRow 7 --colors '#EECA76FF' '#D8537DFF' '#6DC5B2FF' \
+   --yMax 100 25 10 100 25 10 20 --plotWidth 6 --regionsLabel "NC" "PG" "PR"
+   
+
+
+
 ## do a zoomed-in heatmap with H3K27 + FSD-1 only
 
 computeMatrix reference-point --referencePoint TSS  -R ${base}/SharedK27Genes.bed ${base}/PeritheciaOnlyK27Genes.bed ${base}/MyceliaOnlyK27Genes.bed -b 500 -a 300   \
