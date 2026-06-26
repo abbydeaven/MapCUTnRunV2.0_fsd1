@@ -104,7 +104,22 @@ ml R-bundle-CRAN/2025.10-foss-2025a
 
 ## run from /scratch/ad45368/fsd1/ggsashimi
 . env/ggsashimi/bin/activate
- ~/ggsashimi/ggsashimi.py -b fsd1_dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png python ~/ggsashimi/ggsashimi.py -b dev.tsv -c CM002239.1:5296170-5303095 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -o 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png -P palette.txt
+ ~/ggsashimi/ggsashimi.py \
+ -b fsd1_dev.tsv \
+ -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf \
+ -M 10 \
+ -C 3 \
+ -O 3 \
+ -L 3 \
+ -A mean_j \
+ --shrink \
+ --alpha 0.5 \
+  --base-size 20 \
+  --ann-height 1.5 \
+  -P palette.txt \
+ -c CM002239.1:5296170-5303095 \
+ -o fsd1_sashimi_v2 \
+ -F png 
 
  ~/ggsashimi/ggsashimi.py -b fsd1_dev.tsv -c CM002236.1:9564599-9667735 -o vsd1 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png python 
  
