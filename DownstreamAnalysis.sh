@@ -125,6 +125,9 @@ ml R-bundle-CRAN/2025.10-foss-2025a
  
  ~/ggsashimi/ggsashimi.py -b dev.tsv -c CM002236.1:9664599-9667735 -o fsd1_dev_2 -S plus -M 5 -g ~/NcGenome/fungiDB_GFFtoGTF_conversion.gtf -O 3 -C 3 -L 1 --fix-y-scale --ann-height 1 --base-size 18 -F png -P palette.txt
 
+
+## For plotting -- merge bam files
+
  #palette:
  #DE9ED6
 #CE6DBD
