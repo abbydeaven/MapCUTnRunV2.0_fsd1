@@ -133,7 +133,7 @@ bamdir="${outdir}/bamFiles"
 
 samtools merge -o ${bam}/dpf5_wt_rna.bam ${bam}/CWT1_Aligned.sortedByCoord.out.bam ${bam}/CWT4_Aligned.sortedByCoord.out.bam ${bam}/CWT5_Aligned.sortedByCoord.out.bam 
 samtools merge -o ${bam}/dpf5_ko1_rna.bam ${bam}/CM2_Aligned.sortedByCoord.out.bam ${bam}/CM5_Aligned.sortedByCoord.out.bam 
-samtools merge -o ${bam}/dpf5_ko2_rna.bam ${bam}/CW4_Aligned.sortedByCoord.out.bam ${bam}/CM3_Aligned.sortedByCoord.out.bam
+samtools merge -o ${bam}/dpf5_ko2_rna.bam ${bam}/CM4_Aligned.sortedByCoord.out.bam ${bam}/CM3_Aligned.sortedByCoord.out.bam
 
 samtools merge -o ${bam}/wt_rna.bam ${bam}/WT1_Aligned.sortedByCoord.out.bam ${bam}/WT2_Aligned.sortedByCoord.out.bam ${bam}/WT3_Aligned.sortedByCoord.out.bam ${bam}/WT4_Aligned.sortedByCoord.out.bam 
 samtools merge -o ${bam}/oe_rna.bam ${bam}/OE1_Aligned.sortedByCoord.out.bam ${bam}/OE2_Aligned.sortedByCoord.out.bam ${bam}/OE4_Aligned.sortedByCoord.out.bam
