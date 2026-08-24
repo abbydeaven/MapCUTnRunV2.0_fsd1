@@ -6,13 +6,13 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=100gb
 #SBATCH --time=8:00:00
-#SBATCH --output=../MappingOutput/logs/%x.out
-#SBATCH --error=../MappingOutput/logs/%x.err
+#SBATCH --output=../ChIPOutput/logs/%x.out
+#SBATCH --error=../ChIPOutput/logs/%x.err
 
 
 cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
-outdir="/scratch/ad45368/ChIPseq/GFP_ChIP/MappingOutput"
+outdir="../ChIPOutput"
 bamdir="${outdir}/bamFiles"
 bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
@@ -26,14 +26,6 @@ Control3="153_47_ChIP_WT_dpf6_gfp_trap_Rep1"
 fsd1_1="143_3_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
 fsd1_2="143_5_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
 
-h2aZ_gt_M1="153_50_ChIP_h2aZ_M_gfp_trap_Rep1"
-h2aZ_gp_M1="153_51_ChIP_h2aZ_M_GFP_Rep1"
-
-h2aZ_gp_d3="153_54_ChIP_h2aZ_dpf3_GFP_Rep1"
-h2aZ_gt_d3="153_53_ChIP_h2aZ_dpf3_gfp_trap_Rep1"
-
-h2aZ_gt_d6="153_56_ChIP_h2aZ_dpf6_gfp_trap_Rep1"
-h2aZ_gp_d6="153_57_ChIP_h2aZ_dpf6_GFP_Rep1"
 
 for f in *; do
       name=$(echo "$f" | sed -E 's/\-/\_/')
