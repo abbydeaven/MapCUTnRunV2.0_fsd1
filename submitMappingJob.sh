@@ -16,7 +16,7 @@ fi
 
 #iterates through list of accessions and passes to mapping script
 
-fastqPath="../fastqFiles"
+fastqPath="../fastqFiles/ChIPseq"
 outdir="../ChIPOutput"
 
 mkdir ${outdir}
