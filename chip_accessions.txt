@@ -1,0 +1,4 @@
+143-3_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1_S1_L001
+143-5_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1_S3_L001
+143-144_ChIP_WT_gfp-trap_Rep1_S143_L001
+153-47_ChIP_WT_dpf6_gfp-trap_Rep1_S47_L002

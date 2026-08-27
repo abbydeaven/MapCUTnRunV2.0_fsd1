@@ -6,8 +6,8 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=100gb
 #SBATCH --time=8:00:00
-#SBATCH --output=../MappingOutput/logs/%x.out
-#SBATCH --error=../MappingOutput/logs/%x.err
+#SBATCH --output=../ChIPOutput/logs/%x.out
+#SBATCH --error=../ChIPOutput/logs/%x.err
 
 
 cd $SLURM_SUBMIT_DIR
@@ -41,14 +41,17 @@ mkdir "${bamdir}"
 bwDir="${outdir}/bigWig"
 mkdir "${bwDir}"
 
-PeakDir="${outdir}/Peaks/${accession}"
+PeakDir="${outdir}/Peaks"
+mkdir "${PeakDir}"
+mkdir $PeakDir/Control
+mkdir $PeakDir/NoControl
 
 #make variables for output file names
-bam="${bamdir}/${accession}.bam"
-bigwig="${bwDir}/${accession}"
-peak="$PeakDir/${accession}"
+name=$(echo "$accession" | sed -E 's/_S[0-9]{1,3}_L[0-9]{3}//')
 
-name=${bam/%_S[1-12]*_L001_R1_001_val_1.fq.gz/}
+bam="${bamdir}/${name}.bam"
+bigwig="${bwDir}/${name}"
+peak="$PeakDir/${name}"
 
 
 ############# Read Trimming ##############
@@ -91,20 +94,10 @@ bamCoverage -p $THREADS --MNase -bs 1 --normalizeUsing BPM --minMappingQuality 2
 
 #call Peaks
 module load MACS3/3.0.1-gfbf-2023a
-#using --nolambda paramenter to call peaks without control
-#control version: use this to make blacklist
-macs3 callpeak -t "${bam}" -c ${OUTDIR}/SortedBamFiles/153-47_ChIP_WT_dpf6_gfp-trap_Rep1.bam -f BAMPE -n "${name}" -g 41037538 --outdir "${OUTDIR}/Peaks" 
 
-peakfile="${OUTDIR}/${name}_peaks.narrowPeak"
+macs3 callpeak -t "${bam}" --nolambda -f BAMPE -n "${name}" -g 41037538 --outdir $PeakDir/NoControl
 
-# annotate genes + identify motifs
-# ml Homer/5.1-foss-2023a-R-4.3.2
+#next line will error on the first run. this is okay, because control will be generated in next step.
+macs3 callpeak -t "${bam}" -c ${bamdir}/GFPtrap_control.bam -f BAMPE -n "${name}" -g 41037538 --outdir $PeakDir/Control
 
-#before running - run this command to remove additional portions of chromosome name
-# sed 's/\.1 .*$//g' GCA_000182925.2_NC12_genomic.fna > Nc12_Genomic_homer.fna
-
-#findMotifsGenome.pl ${peakfile} /home/ad45368/NcGenome/Nc12_Genomic_homer.fna ${OUTDIR}/Motifs/ -size given -bg 
-
-#create a consensus peakset of both fsd-1 samples
-
-done
+## Done. Proceed to DownstreamAnalysis.sh

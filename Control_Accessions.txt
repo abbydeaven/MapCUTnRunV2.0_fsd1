@@ -1,0 +1,2 @@
+143-144_ChIP_WT_gfp-trap_Rep1_S143_L001
+153-47_ChIP_WT_dpf6_gfp-trap_Rep1_S47_L002
