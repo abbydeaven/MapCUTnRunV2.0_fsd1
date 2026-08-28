@@ -14,30 +14,29 @@ cd $SLURM_SUBMIT_DIR
 ##Directory information+variables:
 outdir="../ChIPOutput"
 bam="${outdir}/bamFiles"
-bw="${outdir}/bigWig"
+bwdir="${outdir}/bigWig"
 PeakDir="${outdir}/Peaks"
 Motifs="${outdir}/Motifs"
-meta="${outdir}/Metaplots"
+
+mkdir $Motifs
 ## Input control and rep information, using name:
 
 #Control1="143_144_ChIP_WT_gfp_trap_Rep1"
 Control1="143-144_ChIP_WT_gfp-trap_Rep1"
 Control2="153-47_ChIP_WT_dpf6_gfp-trap_Rep1"
-fsd1_1="143_3_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
-fsd1_2="143_5_ChIP_fsd1_gfpXsad1_GFPtrap_Rep1"
-
-# Replace '-' in filenames with "_" to avoid issues with downstream analysis
-for f in *; do
-      name=$(echo "$f" | sed -E 's/\-/\_/')
-      mv $f $name
-      done
+fsd1_1="143-3_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1"
+fsd1_2="143-5_ChIP_fsd1-gfpXsad1_GFPtrap_Rep1"
 
 
 ## Use bedtools to make a consensus peakset of peaks with 80% overlap in all samples
 ml BEDTools/2.31.1-GCC-13.3.0
 
-bedtools intersect -a $PeakDir/${Control1}.narrowPeak -b ${PeakDir}/${Control2}.narrowPeak  -f 0.5 -wa > ${PeakDir}/GFPtrap_Consensus_Peaks.bed
-bedtools intersect -a ${PeakDir}/${fsd1_1}.narrowPeak -b ${PeakDir}/${fsd1_1}.narrowPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks.bed
+bedtools intersect -a $PeakDir/NoControl/${Control1}_peaks.narrowPeak -b ${PeakDir}/NoControl/${Control2}_peaks.narrowPeak  -f 0.5 -wa > ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak
+bedtools intersect -a ${PeakDir}/Control/${fsd1_1}_peaks.narrowPeak -b ${PeakDir}/Control/${fsd1_1}_peaks.narrowPeak -f 0.5 -wa > ${PeakDir}/fsd1_Consensus_Peaks.narrowPeak
+
+# convert final datasets to bed format
+cut -f 1-6 ${PeakDir}/fsd1_Consensus_Peaks.narrowPeak > ${PeakDir}/fsd1_Consensus_Peaks.bed
+cut -f 1-6 ${PeakDir}/GFPtrap_Consensus_Peaks.narrowPeak > ${PeakDir}/GFPtrap_Consensus_Peaks.bed
 
 ## report no. peaks in each peakfile
 wc -l * > peak_counts.txt
@@ -70,8 +69,8 @@ bedGraphToBigWig ${bwdir}/fsd1_dpf6_merged.bedGraph /home/ad45368/chrom_sizes.tx
 ml MEME/5.5.7-gompi-2023b
 
     # First convert peak files to FASTA using bed2fasta
-    bed2fasta ${PeakDir}/GFPtrap_Consensus_Peaks.bed /home/zlewis/Genomes/Neurospora/Nc12_RefSeq/GCA_000182925.2_NC12_genomic.fna -o ${Motifs}/GFPtrap_background_peaksequences.fasta
-    bed2fasta ${PeakDir}/fsd1_Consensus_Peaks.bed /home/zlewis/Genomes/Neurospora/Nc12_RefSeq/GCA_000182925.2_NC12_genomic.fna -o ${Motifs}/fsd1_peaksequences.fasta
+    bed2fasta -o ${Motifs}/GFPtrap_background_peaksequences.fasta ${PeakDir}/GFPtrap_Consensus_Peaks.bed /home/zlewis/Genomes/Neurospora/Nc12_RefSeq/GCA_000182925.2_NC12_genomic.fna 
+    bed2fasta -o ${Motifs}/fsd1_peaksequences.fasta ${PeakDir}/fsd1_Consensus_Peaks.bed /home/zlewis/Genomes/Neurospora/Nc12_RefSeq/GCA_000182925.2_NC12_genomic.fna
 
     # Identify motifs
     meme-chip ${Motifs}/fsd1_peaksequences.fasta \
