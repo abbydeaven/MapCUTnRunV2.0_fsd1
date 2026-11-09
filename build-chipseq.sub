@@ -1,0 +1,11 @@
+log = build-conda.log
+
+transfer_input_files = chipseq-env.def
+
++IsBuildJob = True
+
+request_cpus = 8
+request_memory = 16GB
+request_disk = 30GB
+
+queue
