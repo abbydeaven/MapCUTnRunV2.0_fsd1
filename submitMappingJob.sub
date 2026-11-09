@@ -1,4 +1,4 @@
-container_image = osdf:///chtc/staging/ChIPseq/chipseq-env.def
+container_image = osdf:///chtc/staging/Env/chipseq-env.def
 
 # ---------------------------------------------------------------------------
 # Define paths and variables 
