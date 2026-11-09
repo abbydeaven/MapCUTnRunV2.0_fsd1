@@ -31,6 +31,18 @@ source config.txt
   read2=(${fastqPath}/${accession}*_R2_001.fastq.gz)
 
 #make output file folders
+
+mkdir ${outdir}
+mkdir ${outdir}/logs
+
+#make output file folders
+mkdir "${outdir}/TrimmedFastQs"
+mkdir "${outdir}/bamFiles"
+mkdir "${outdir}/bigWig"
+mkdir "${outdir}/Peaks"
+mkdir "${outdir)/logs"
+
+
 trimmed="${outdir}/TrimmedFastQs/${accession}"
 mkdir $trimmed
 
