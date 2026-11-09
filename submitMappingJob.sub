@@ -27,6 +27,7 @@ mkdir "$(outdir}/TrimmedFastQs"
 mkdir "$(outdir}/bamFiles"
 mkdir "$(outdir}/bigWig"
 mkdir "$(outdir}/Peaks"
+mkdir "$(outdir)/logs"
 
 # ---------------------------------------------------------------------------
 # Resource requests 
