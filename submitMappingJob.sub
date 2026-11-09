@@ -3,6 +3,9 @@ container_image = osdf:///chtc/staging/Env/chipseq-env.def
 # ---------------------------------------------------------------------------
 # Define paths and variables 
 # ---------------------------------------------------------------------------
+# Path to fastq files and outdir
+path = '/staging/d/deaven2/UGA_Chromatin'
+
 # Genome - uncomment desired genome
 genome = '/staging/d/deaven2/BwaIndex/CEA10_assembly.fa'
 
@@ -16,8 +19,8 @@ SMOOTH = 75
 ### EVENTUALLY -- add option for macs3 in TF mode or histone mode
 
 # Paths and subdirectories
-fastqPath = '../FastqFiles'
-outdir = '../MappingOutput'
+fastqPath = $(path}/fastqFiles'
+outdir = $(path}/MappingOutput'
 
 # ---------------------------------------------------------------------------
 # Resource requests 
