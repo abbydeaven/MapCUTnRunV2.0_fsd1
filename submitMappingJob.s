@@ -1,0 +1,63 @@
+container_image = osdf:///chtc/staging/ChIPseq/chipseq-env.def
+
+# ---------------------------------------------------------------------------
+# Define paths and variables 
+# ---------------------------------------------------------------------------
+# Genome - uncomment desired genome
+genome = "/staging/d/deaven2/BwaIndex/CEA10_assembly.fa"
+
+# Input accession file; accessions.txt is default
+accession_list = accessions.txt
+
+# deepTools parameters
+BIN    = 25
+SMOOTH = 75
+
+### EVENTUALLY -- add option for macs3 in TF mode or histone mode
+
+# Paths and subdirectories
+fastqPath = "../FastqFiles"
+outdir = "../MappingOutput"
+
+mkdir $(outdir}
+mkdir $(outdir}/logs
+
+#make output file folders
+mkdir "$(outdir}/TrimmedFastQs"
+mkdir "$(outdir}/bamFiles"
+mkdir "$(outdir}/bigWig"
+mkdir "$(outdir}/Peaks"
+
+# ---------------------------------------------------------------------------
+# Resource requests 
+# ---------------------------------------------------------------------------
+request_cpus   = 4
+request_memory = 100GB
+request_disk   = 50GB
+
+
+# ---------------------------------------------------------------------------
+# HTCondor job settings
+# ---------------------------------------------------------------------------
+# Tell CHTC that we are running a container image
+universe = container
+executable = MapData.sh
+
+# Create environment with variables defined above
+environment = "fastqPath=$(fastqPath) outdir=$(outdir) GENOME=$(genome) BIN=$(BIN) SMOOTH=$(SMOOTH) THREADS=$(request_cpus)"
+
+# Map each file in separate job
+queue accession from $(accession_list)
+
+	echo "$(accession) mapping job submitted" 
+	
+# Make output/log/error files
+log    = $(outdir)/logs/$(accession).log
+output = $(outdir)/logs/$(accession).out
+error  = $(outdir)/logs/$(accession).err
+
+# ---------------------------------------------------------------------------
+# Notifications
+# ---------------------------------------------------------------------------
+notification = Error
+notify_user  = deaven2@wisc.edu
