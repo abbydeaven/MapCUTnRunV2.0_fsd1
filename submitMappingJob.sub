@@ -4,7 +4,7 @@ container_image = osdf:///chtc/staging/Env/chipseq-env.def
 # Define paths and variables 
 # ---------------------------------------------------------------------------
 # Genome - uncomment desired genome
-genome = "/staging/d/deaven2/BwaIndex/CEA10_assembly.fa"
+genome = '/staging/d/deaven2/BwaIndex/CEA10_assembly.fa'
 
 # Input accession file; accessions.txt is default
 accession_list = accessions.txt
@@ -16,8 +16,8 @@ SMOOTH = 75
 ### EVENTUALLY -- add option for macs3 in TF mode or histone mode
 
 # Paths and subdirectories
-fastqPath = "../FastqFiles"
-outdir = "../MappingOutput"
+fastqPath = '../FastqFiles'
+outdir = '../MappingOutput'
 
 # ---------------------------------------------------------------------------
 # Resource requests 
@@ -25,6 +25,17 @@ outdir = "../MappingOutput"
 request_cpus   = 4
 request_memory = 100GB
 request_disk   = 50GB
+
+# Make output/log/error files
+log    = $(outdir)/logs/$(accession).log
+output = $(outdir)/logs/$(accession).out
+error  = $(outdir)/logs/$(accession).err
+
+# ---------------------------------------------------------------------------
+# Notifications
+# ---------------------------------------------------------------------------
+notification = Error
+notify_user  = deaven2@wisc.edu
 
 
 # ---------------------------------------------------------------------------
@@ -38,17 +49,4 @@ executable = MapData.sh
 environment = "fastqPath=$(fastqPath) outdir=$(outdir) GENOME=$(genome) BIN=$(BIN) SMOOTH=$(SMOOTH) THREADS=$(request_cpus)"
 
 # Map each file in separate job
-queue accession from $(accession_list)
-
-	echo "$(accession) mapping job submitted" 
-	
-# Make output/log/error files
-log    = $(outdir)/logs/$(accession).log
-output = $(outdir)/logs/$(accession).out
-error  = $(outdir)/logs/$(accession).err
-
-# ---------------------------------------------------------------------------
-# Notifications
-# ---------------------------------------------------------------------------
-notification = Error
-notify_user  = deaven2@wisc.edu
+queue accession from $(accession_list)	
